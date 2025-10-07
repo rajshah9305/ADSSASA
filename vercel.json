@@ -4,7 +4,9 @@
   "devCommand": "npm run dev",
   "outputDirectory": ".next",
   "functions": {
-    "src/app/api/generate/route.ts": {}
+    "src/app/api/generate/route.ts": {
+      "runtime": "@vercel/node@22"
+    }
   },
   "regions": ["iad1"],
   "headers": [
