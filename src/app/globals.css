@@ -1,0 +1,16 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* --- custom mini-reset + selection --- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+body { @apply bg-white text-gray-900 antialiased; }
+::selection { @apply bg-orange-500 text-white; }
+
+/* --- tiny utilities --- */
+.streaming-cursor::after {
+  content: '';
+  @apply inline-block w-0.5 h-5 bg-orange-500 ml-1 animate-pulse;
+}
