@@ -8,14 +8,36 @@ interface Props {
   code: string;
 }
 
-export function PreviewPanel({ code }: Props) {
-  const [key, setKey] = useState(0);
-  const [hasError, setHasError] = useState(false);
-  const [useFallback, setUseFallback] = useState(false);
+const tailwindConfig = `/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './*.{js,ts,jsx,tsx}',
+    './components/*.{js,ts,jsx,tsx}',
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}`;
 
-  const files = useMemo(() => {
-    if (!code.trim()) return {
-      '/App.js': `export default function App() {
+const indexCss = `@tailwind base;
+@tailwind components;
+@tailwind utilities;`;
+
+const indexTsx = `import React, { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './styles.css';
+
+import App from './App';
+
+const root = createRoot(document.getElementById('root'));
+root.render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);`;
+
+const placeholderApp = `export default function App() {
   return (
     <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',fontFamily:'Inter, sans-serif',color:'#64748b'}}>
       <div style={{textAlign:'center'}}>
@@ -24,22 +46,37 @@ export function PreviewPanel({ code }: Props) {
       </div>
     </div>
   );
-}`,
-    };
+}`;
 
-    let cleaned = code
-      .replace(/^```(tsx?|javascript|jsx?)?\s*\n/gm, '')
-      .replace(/\n```\s*$/gm, '')
-      .trim();
+export function PreviewPanel({ code }: Props) {
+  const [key, setKey] = useState(0);
+  const [hasError, setHasError] = useState(false);
+  const [useFallback, setUseFallback] = useState(false);
 
-    if (!cleaned.includes('export')) {
-      const fn = cleaned.match(/function\s+(\w+)/) || cleaned.match(/const\s+(\w+)\s*=/);
-      if (fn) cleaned += `\n\nexport default ${fn[1]};`;
-      else cleaned = `function GeneratedComponent() {\n  return (\n    <div className="p-8">${cleaned}</div>\n  );\n}\n\nexport default GeneratedComponent;`;
+  const files = useMemo(() => {
+    let appCode = placeholderApp;
+    if (code.trim()) {
+        let cleaned = code
+          .replace(/^```(tsx?|javascript|jsx?)?\s*\n/gm, '')
+          .replace(/\n```\s*$/gm, '')
+          .trim();
+
+        if (!cleaned.includes('export default')) {
+          const fn = cleaned.match(/function\s+(\w+)/) || cleaned.match(/const\s+(\w+)\s*=/);
+          if (fn && fn[1]) {
+            cleaned += `\n\nexport default ${fn[1]};`;
+          }
+        }
+        appCode = cleaned;
     }
 
     setHasError(false);
-    return { '/App.js': cleaned };
+    return {
+        '/App.tsx': appCode,
+        '/index.tsx': { code: indexTsx, hidden: true },
+        '/styles.css': { code: indexCss, hidden: true },
+        '/tailwind.config.js': { code: tailwindConfig, hidden: true },
+    };
   }, [code]);
 
   const copy = () => navigator.clipboard.writeText(code).then(() => toast.success('Copied'));
@@ -111,7 +148,7 @@ export function PreviewPanel({ code }: Props) {
           ) : (
             <Sandpack
               key={key}
-              template="react"
+              template="react-ts"
               files={files}
               theme={{
                 colors: { surface1: '#ffffff', surface2: '#f8fafc', accent: '#f97316', error: '#ef4444' },
@@ -130,7 +167,14 @@ export function PreviewPanel({ code }: Props) {
                 recompileDelay: 300,
                 showConsole: false,
               }}
-              customSetup={{ dependencies: { 'lucide-react': '0.263.1' } }}
+              customSetup={{
+                dependencies: {
+                  'lucide-react': 'latest',
+                  'tailwindcss': 'latest',
+                  'postcss': 'latest',
+                  'autoprefixer': 'latest'
+                }
+             }}
             />
           )}
         </div>
