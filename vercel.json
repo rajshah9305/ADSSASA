@@ -5,7 +5,7 @@
   "outputDirectory": ".next",
   "functions": {
     "src/app/api/generate/route.ts": {
-      "runtime": "@vercel/node"
+      "runtime": "@vercel/node@18"
     }
   },
   "regions": ["iad1"],
