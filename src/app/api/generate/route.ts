@@ -90,13 +90,13 @@ const stream = new ReadableStream({
       
       // Create streaming completion
       const completion = await client.chat.completions.create({
-        model: 'llama3.1-8b', // Fast and efficient 8B model
+        model: 'llama3.1-8b',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: prompt },
         ],
         stream: true,
-        max_completion_tokens: 16000, // Reasonable limit for components
+        max_completion_tokens: 16000,
         temperature: 0.7,
         top_p: 0.9,
       });
@@ -166,7 +166,7 @@ return new Response(stream, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache, no-transform',
     'Connection': 'keep-alive',
-    'X-Accel-Buffering': 'no', // Disable nginx buffering
+    'X-Accel-Buffering': 'no',
   },
 });
 ```
@@ -193,31 +193,23 @@ return new Response(
 
 // Helper function to clean up generated code
 function cleanupCode(code: string): string {
-// Remove markdown code fences
 let cleaned = code
 .replace(/^`(?:tsx?|javascript|jsx?)?\s*\n/gm, '') .replace(/\n`\s*$/gm, ‘’)
 .trim();
-
-// Remove any leading/trailing whitespace
-cleaned = cleaned.trim();
 
 return cleaned;
 }
 
 // Helper function to extract component name
 function extractComponentName(code: string): string {
-// Try to find function component name
 const functionMatch = code.match(/function\s+([A-Z]\w*)/);
 if (functionMatch) return functionMatch[1];
 
-// Try to find const component name
 const constMatch = code.match(/const\s+([A-Z]\w*)\s*=/);
 if (constMatch) return constMatch[1];
 
-// Default to App
 return ‘App’;
 }
 
-// Force dynamic rendering (disable static optimization)
 export const dynamic = ‘force-dynamic’;
 export const runtime = ‘nodejs’;
