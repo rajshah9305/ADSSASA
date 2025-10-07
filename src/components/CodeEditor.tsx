@@ -12,7 +12,6 @@ onCodeChange: (code: string) => void;
 export function CodeEditor({ code, isStreaming, onCodeChange }: Props) {
 const ref = useRef<HTMLTextAreaElement>(null);
 
-// Auto-scroll to bottom during streaming
 useEffect(() => {
 if (ref.current && isStreaming) {
 ref.current.scrollTop = ref.current.scrollHeight;
@@ -61,7 +60,6 @@ try {
 
 return (
 <div className="flex-1 flex flex-col bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden h-full">
-{/* Header */}
 <div className="flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3 bg-gray-50 border-b border-gray-200 flex-shrink-0">
 <div className="flex items-center gap-2">
 <h3 className="text-xs sm:text-sm md:text-base font-semibold text-gray-900">
@@ -98,7 +96,6 @@ Generated Code
     </div>
   </div>
 
-  {/* Code Editor Area */}
   <div className="flex-1 relative min-h-0">
     <textarea
       ref={ref}
@@ -116,7 +113,6 @@ Generated Code
       }}
     />
     
-    {/* Empty State */}
     {!code && !isStreaming && (
       <div className="absolute inset-0 flex items-center justify-center text-gray-400 pointer-events-none">
         <div className="text-center space-y-2 p-4">
@@ -130,7 +126,6 @@ Generated Code
     )}
   </div>
 
-  {/* Footer Info */}
   {code && !isStreaming && (
     <div className="px-2 sm:px-4 py-2 bg-gray-50 border-t border-gray-200 flex items-center justify-between text-xs text-gray-500">
       <span className="flex items-center gap-1">
