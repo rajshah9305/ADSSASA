@@ -1,3 +1,4 @@
+```tsx
 'use client';
 import { useState, useMemo } from 'react';
 import { Eye, RefreshCw, Copy, AlertTriangle } from 'lucide-react';
@@ -182,8 +183,7 @@ export function PreviewPanel({ code }: Props) {
                   'postcss': 'latest',
                   'autoprefixer': 'latest'
                 }
-             }}
-             onError={() => setHasError(true)}
+              }}
             />
           )}
         </div>
@@ -191,4 +191,4 @@ export function PreviewPanel({ code }: Props) {
     </div>
   );
 }
-
+```
