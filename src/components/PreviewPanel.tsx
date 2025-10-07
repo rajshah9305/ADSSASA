@@ -60,51 +60,31 @@ export function PreviewPanel({ code }: Props) {
   const [useFallback, setUseFallback] = useState(false);
 
   const files = useMemo(() => {
-    try {
-      let appCode = placeholderApp;
-      if (code.trim()) {
-        // Clean the code by removing markdown fences if present
-        let cleaned = code
-          .replace(/^```(tsx?|javascript|jsx?)?\s*\n/gm, '')
-          .replace(/\n```\s*$/gm, '')
-          .trim();
+    let appCode = placeholderApp;
+    if (code.trim()) {
+      let cleaned = code
+        .replace(/^```(tsx?|javascript|jsx?)?\s*\n/gm, '')
+        .replace(/\n```\s*$/gm, '')
+        .trim();
 
-        // Check if the code already has an export default statement
-        if (!cleaned.includes('export default')) {
-          // Try to find the component name
-          const fn = cleaned.match(/function\s+(\w+)/) || cleaned.match(/const\s+(\w+)\s*=/);
-          if (fn?.[1]) {
-            // Add export default if a component name is found
-            cleaned += `\n\nexport default ${fn[1]};`;
-          } else {
-            // If no component name is found, use a default one
-            cleaned = `export default function App() {\n  return (\n    <div>\n      ${cleaned}\n    </div>\n  );\n}`;
-          }
-        }
-        appCode = cleaned;
-        setHasError(false);
+      if (!cleaned.includes('export default')) {
+        const fn = cleaned.match(/function\s+(\w+)/) || cleaned.match(/const\s+(\w+)\s*=/);
+        if (fn?.[1]) cleaned += `\n\nexport default ${fn[1]};`;
       }
-      return {
-        '/App.tsx': appCode,
-        '/index.tsx': { code: indexTsx, hidden: true },
-        '/styles.css': { code: indexCss, hidden: true },
-        '/tailwind.config.js': { code: tailwindConfig, hidden: true },
-        '/postcss.config.js': { code: postcssConfig, hidden: true },
-      };
-    } catch (error) {
-      setHasError(true);
-      console.error('Error in code processing:', error);
-      return {
-        '/App.tsx': placeholderApp,
-        '/index.tsx': { code: indexTsx, hidden: true },
-        '/styles.css': { code: indexCss, hidden: true },
-        '/tailwind.config.js': { code: tailwindConfig, hidden: true },
-        '/postcss.config.js': { code: postcssConfig, hidden: true },
-      };
+      appCode = cleaned;
     }
+
+    setHasError(false);
+    return {
+      '/App.tsx': appCode,
+      '/index.tsx': { code: indexTsx, hidden: true },
+      '/styles.css': { code: indexCss, hidden: true },
+      '/tailwind.config.js': { code: tailwindConfig, hidden: true },
+      '/postcss.config.js': { code: postcssConfig, hidden: true },
+    };
   }, [code]);
 
-  const copy = () => navigator.clipboard.writeText(code).then(() => toast.success('Copied')).catch(() => toast.error('Failed to copy'));
+  const copy = () => navigator.clipboard.writeText(code).then(() => toast.success('Copied'));
   const refresh = () => { setKey(k => k + 1); setHasError(false); toast.success('Preview refreshed'); };
   const fallback = () => { setUseFallback(true); toast('Switched to fallback preview'); };
 
