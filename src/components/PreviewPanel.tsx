@@ -41,7 +41,6 @@ const [hasError, setHasError] = useState(false);
 const [errorMessage, setErrorMessage] = useState(’’);
 const [isReady, setIsReady] = useState(false);
 
-// Reset error state when code changes
 useEffect(() => {
 if (code) {
 setHasError(false);
@@ -56,13 +55,11 @@ let appCode = placeholderApp;
 ```
 if (code.trim()) {
   try {
-    // Clean up the code
     let cleaned = code
       .replace(/^```(?:tsx?|javascript|jsx?)?\s*\n/gm, '')
       .replace(/\n```\s*$/gm, '')
       .trim();
 
-    // Ensure export default exists
     if (!cleaned.includes('export default')) {
       const functionMatch = cleaned.match(/function\s+([A-Z]\w+)/);
       const constMatch = cleaned.match(/const\s+([A-Z]\w+)\s*=/);
@@ -107,7 +104,6 @@ toast.success(‘Preview refreshed!’);
 
 return (
 <div className="flex-1 flex flex-col bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden h-full">
-{/* Header */}
 <div className="flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3 bg-gray-50 border-b border-gray-200 flex-shrink-0">
 <div className="flex items-center gap-2">
 <h3 className="text-xs sm:text-sm md:text-base font-semibold text-gray-900">
@@ -156,7 +152,6 @@ Live Preview
     </div>
   </div>
 
-  {/* Error Banner */}
   {hasError && errorMessage && (
     <div className="px-2 sm:px-4 py-2 bg-red-50 border-b border-red-200 flex items-start gap-2">
       <AlertTriangle className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
@@ -177,7 +172,6 @@ Live Preview
     </div>
   )}
 
-  {/* Preview Content */}
   <div className="flex-1 p-2 sm:p-4 min-h-0 overflow-hidden">
     <div className="h-full bg-gray-50 rounded-lg overflow-hidden shadow-inner">
       {!code ? (
