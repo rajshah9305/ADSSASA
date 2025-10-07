@@ -65,6 +65,7 @@ export default function Home() {
       if (e.name !== 'AbortError') {
         toast.error(e.message);
         console.error(e);
+        setShowPreview(false); // Reset showPreview on error
       }
     } finally {
       setIsGenerating(false);
