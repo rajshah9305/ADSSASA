@@ -1,4 +1,3 @@
-```tsx
 'use client';
 import { useState, useMemo } from 'react';
 import { Eye, RefreshCw, Copy, AlertTriangle } from 'lucide-react';
@@ -35,10 +34,9 @@ const indexCss = `@tailwind base;
 const indexTsx = `import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
+import App from './App';
 
-import App from './App.tsx';
-
-const root = createRoot(document.getElementById('root'));
+const root = createRoot(document.getElementById('root')!);
 root.render(
   <StrictMode>
     <App />
@@ -64,27 +62,25 @@ export function PreviewPanel({ code }: Props) {
   const files = useMemo(() => {
     let appCode = placeholderApp;
     if (code.trim()) {
-        let cleaned = code
-          .replace(/^```(tsx?|javascript|jsx?)?\s*\n/gm, '')
-          .replace(/\n```\s*$/gm, '')
-          .trim();
+      let cleaned = code
+        .replace(/^```(tsx?|javascript|jsx?)?\s*\n/gm, '')
+        .replace(/\n```\s*$/gm, '')
+        .trim();
 
-        if (!cleaned.includes('export default')) {
-          const fn = cleaned.match(/function\s+(\w+)/) || cleaned.match(/const\s+(\w+)\s*=/);
-          if (fn && fn[1]) {
-            cleaned += `\n\nexport default ${fn[1]};`;
-          }
-        }
-        appCode = cleaned;
+      if (!cleaned.includes('export default')) {
+        const fn = cleaned.match(/function\s+(\w+)/) || cleaned.match(/const\s+(\w+)\s*=/);
+        if (fn?.[1]) cleaned += `\n\nexport default ${fn[1]};`;
+      }
+      appCode = cleaned;
     }
 
     setHasError(false);
     return {
-        '/App.tsx': appCode,
-        '/index.tsx': { code: indexTsx, hidden: true },
-        '/styles.css': { code: indexCss, hidden: true },
-        '/tailwind.config.js': { code: tailwindConfig, hidden: true },
-        '/postcss.config.js': { code: postcssConfig, hidden: true },
+      '/App.tsx': appCode,
+      '/index.tsx': { code: indexTsx, hidden: true },
+      '/styles.css': { code: indexCss, hidden: true },
+      '/tailwind.config.js': { code: tailwindConfig, hidden: true },
+      '/postcss.config.js': { code: postcssConfig, hidden: true },
     };
   }, [code]);
 
@@ -191,4 +187,3 @@ export function PreviewPanel({ code }: Props) {
     </div>
   );
 }
-```
