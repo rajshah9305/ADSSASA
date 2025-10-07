@@ -173,6 +173,7 @@ export function PreviewPanel({ code }: Props) {
                 showConsole: false,
               }}
               customSetup={{
+                files: files,
                 dependencies: {
                   'lucide-react': 'latest',
                   'tailwindcss': 'latest',
