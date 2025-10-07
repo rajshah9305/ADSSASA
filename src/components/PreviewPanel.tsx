@@ -20,6 +20,13 @@ module.exports = {
   plugins: [],
 }`;
 
+const postcssConfig = `module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}`;
+
 const indexCss = `@tailwind base;
 @tailwind components;
 @tailwind utilities;`;
@@ -28,7 +35,7 @@ const indexTsx = `import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 
-import App from './App';
+import App from './App.tsx';
 
 const root = createRoot(document.getElementById('root'));
 root.render(
@@ -76,6 +83,7 @@ export function PreviewPanel({ code }: Props) {
         '/index.tsx': { code: indexTsx, hidden: true },
         '/styles.css': { code: indexCss, hidden: true },
         '/tailwind.config.js': { code: tailwindConfig, hidden: true },
+        '/postcss.config.js': { code: postcssConfig, hidden: true },
     };
   }, [code]);
 
@@ -175,6 +183,7 @@ export function PreviewPanel({ code }: Props) {
                   'autoprefixer': 'latest'
                 }
              }}
+             onError={() => setHasError(true)}
             />
           )}
         </div>
@@ -182,3 +191,4 @@ export function PreviewPanel({ code }: Props) {
     </div>
   );
 }
+
